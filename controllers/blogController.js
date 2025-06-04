@@ -3,14 +3,14 @@ import { uploadBlog } from '../utils/uploadBlog.js';
 
 export const createBlog = async (req, res) => {
     try {
-        const { title, content } = req.body;
+        const { title, content, type } = req.body;
         let imageUrl = '';
 
         if (req.file) {
             imageUrl = await uploadBlog(req.file.buffer);
         }
 
-        const blog = new Blog({ title, content, image: imageUrl });
+        const blog = new Blog({ title, content, image: imageUrl, type });
         await blog.save();
         res.status(201).json(blog);
     } catch (error) {
