@@ -39,8 +39,8 @@ export const getBlogById = async (req, res) => {
 
 export const updateBlog = async (req, res) => {
     try {
-        const { title, content } = req.body;
-        let updateData = { title, content };
+        const { title, content ,type} = req.body;
+        let updateData = { title, content,type };
 
         if (req.file) {
             const imageUrl = await uploadBlog(req.file.buffer);
