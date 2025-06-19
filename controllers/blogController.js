@@ -1,16 +1,26 @@
 import Blog from '../models/Blog.js';
 import { uploadBlog } from '../utils/uploadBlog.js';
 
+// Create Blog
 export const createBlog = async (req, res) => {
     try {
-        const { title, content, type } = req.body;
+        const { title, excerpt, content, author, tags, category } = req.body;
         let imageUrl = '';
 
         if (req.file) {
             imageUrl = await uploadBlog(req.file.buffer);
         }
 
-        const blog = new Blog({ title, content, image: imageUrl, type });
+        const blog = new Blog({
+            title,
+            excerpt,
+            content,
+            author,
+            tags: tags ? JSON.parse(tags) : [], // If sent as stringified array
+            category,
+            image: imageUrl
+        });
+
         await blog.save();
         res.status(201).json(blog);
     } catch (error) {
@@ -18,18 +28,20 @@ export const createBlog = async (req, res) => {
     }
 };
 
+// Get All Blogs
 export const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find().sort({ createdAt: -1 });
+        const blogs = await Blog.find().populate('category').sort({ createdAt: -1 });
         res.json(blogs);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
+// Get Blog By ID
 export const getBlogById = async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id);
+        const blog = await Blog.findById(req.params.id).populate('category');
         if (!blog) return res.status(404).json({ message: 'Blog not found' });
         res.json(blog);
     } catch (err) {
@@ -37,10 +49,18 @@ export const getBlogById = async (req, res) => {
     }
 };
 
+// Update Blog
 export const updateBlog = async (req, res) => {
     try {
-        const { title, content ,type} = req.body;
-        let updateData = { title, content,type };
+        const { title, excerpt, content, author, tags, category } = req.body;
+        let updateData = {
+            title,
+            excerpt,
+            content,
+            author,
+            tags: tags ? JSON.parse(tags) : [],
+            category
+        };
 
         if (req.file) {
             const imageUrl = await uploadBlog(req.file.buffer);
@@ -56,6 +76,7 @@ export const updateBlog = async (req, res) => {
     }
 };
 
+// Delete Blog
 export const deleteBlog = async (req, res) => {
     try {
         const blog = await Blog.findByIdAndDelete(req.params.id);
