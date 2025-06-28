@@ -5,6 +5,7 @@ const blogSchema = new mongoose.Schema({
     excerpt: { type: String },
     content: { type: String },
     author: { type: String },
+    url: { type: String },
     tags: [{ type: String }],
     category: {
         type: mongoose.Schema.Types.ObjectId,

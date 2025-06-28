@@ -4,7 +4,7 @@ import { uploadBlog } from '../utils/uploadBlog.js';
 // Create Blog
 export const createBlog = async (req, res) => {
     try {
-        const { title, excerpt, content, author, tags, category } = req.body;
+        const { title, excerpt, content, author,url, tags, category } = req.body;
         let imageUrl = '';
 
         if (req.file) {
@@ -16,6 +16,7 @@ export const createBlog = async (req, res) => {
             excerpt,
             content,
             author,
+            url,
             tags: tags ? JSON.parse(tags) : [], // If sent as stringified array
             category,
             image: imageUrl
@@ -52,12 +53,13 @@ export const getBlogById = async (req, res) => {
 // Update Blog
 export const updateBlog = async (req, res) => {
     try {
-        const { title, excerpt, content, author, tags, category } = req.body;
+        const { title, excerpt, content, author,url, tags, category } = req.body;
         let updateData = {
             title,
             excerpt,
             content,
             author,
+            url,
             tags: tags ? JSON.parse(tags) : [],
             category
         };
